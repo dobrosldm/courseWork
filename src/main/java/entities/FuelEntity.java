@@ -10,76 +10,27 @@ import javax.persistence.*;
 @Entity
 @Table(name = "ТОПЛИВО", schema = "s242419", catalog = "studs")
 public class FuelEntity {
-    /** Вид топлива */
-    private String naming;
-
-    /** Создает новый вид топлива без заданного названия
-     *  @see FuelEntity#FuelEntity(String)
-     */
-    public FuelEntity() {
-    }
-
-    /** Создает новый вид топлива с заданным названием
-     *  @see FuelEntity#FuelEntity()
-     */
-    public FuelEntity(String naming) {
-        this.naming = naming;
-    }
-
-    /**
-     * @return Вид топлива
-     */
-    @Basic
-    @Column(name = "НАЗВАНИЕ", nullable = true, length = -1)
-    public String getNaming() {
-        return naming;
-    }
-
-    /**
-     * Функция для определения вида топлива
-     */
-    public void setNaming(String naming) {
-        this.naming = naming;
-    }
-
-    /**
-     * @return Boolean значение, равны ли сравниваемые объекты
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        FuelEntity that = (FuelEntity) o;
-
-        if (naming != null ? !naming.equals(that.naming) : that.naming != null) return false;
-
-        return true;
-    }
-
-    /**
-     * @return Хэш-код объекта FuelEntity
-     */
-    @Override
-    public int hashCode() {
-        return naming != null ? naming.hashCode() : 0;
-    }
-
     /** Юзлесс идентификатор */
-    private Integer id;
+    private FuelEntityKey id;
+
+    public FuelEntity() { }
+
+    public FuelEntity(String naming) {
+        this.id = new FuelEntityKey(naming);
+    }
 
     /**
      * @return Юзлесс идентификатор
      */
     @Id
-    public Integer getId() {
+    public FuelEntityKey getId() {
         return id;
     }
 
     /**
      * Юзлесс функция для определения юзлесс идентификатора
      */
-    public void setId(Integer id) {
+    public void setId(FuelEntityKey id) {
         this.id = id;
     }
 }

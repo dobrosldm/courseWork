@@ -1,6 +1,8 @@
 import dao.GenericDao;
 import entities.*;
 
+import java.util.logging.Level;
+
 /**
  * Временный класс, носящий тестовый или демонстрационный характер.
  * @autor Порядин Арсений, Добровицкий Дмитрий
@@ -8,11 +10,8 @@ import entities.*;
  */
 public class Main {
     public static void main(final String[] args) {
-        GenericDao<TransportEntity, Integer> dao = new GenericDao<>(TransportEntity.class);
-        /*for (TransportEntity t : dao.selectAll()) {
-            System.out.println(t.getName());
-        }*/
-        System.out.println(dao.findById(3).getName());
+        GenericDao<FuelEntity, Integer> dao = new GenericDao<>(FuelEntity.class);
+
         dao.finishWork();
     }
 }

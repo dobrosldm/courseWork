@@ -15,6 +15,6 @@ public interface DaoInterface<T, PK extends Serializable> {
 
     List<T> selectAll();
 
-    //void deleteAll();
+    void deleteAll();
 
 }
