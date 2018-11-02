@@ -9,8 +9,10 @@ import entities.*;
 public class Main {
     public static void main(final String[] args) {
         GenericDao<TransportEntity, Integer> dao = new GenericDao<>(TransportEntity.class);
-        TransportEntity transportEntity = new TransportEntity(6, "ывалгпи", false, 100);
-        dao.update(transportEntity);
-        System.exit(0);
+        /*for (TransportEntity t : dao.selectAll()) {
+            System.out.println(t.getName());
+        }*/
+        System.out.println(dao.findById(3).getName());
+        dao.finishWork();
     }
 }

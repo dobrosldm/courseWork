@@ -2,22 +2,18 @@ package dao;
 
 import java.io.Serializable;
 import java.util.List;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 public class GenericDao<T, PK extends Serializable> implements DaoInterface<T, PK> {
-    private static final SessionFactory ourSessionFactory;
-    private Session currentSession;
-    private Transaction currentTransaction;
+    private static final EntityManagerFactory ourFactory;
     private Class<T> type;
 
     static {
         try {
-            Configuration configuration = new Configuration();
-            configuration.configure();
-            ourSessionFactory = configuration.buildSessionFactory();
+            ourFactory = Persistence.createEntityManagerFactory("ru.seifmo.courseWork.jpa.hibernate");
         } catch (Throwable ex) {
             throw new ExceptionInInitializerError(ex);
         }
@@ -27,62 +23,50 @@ public class GenericDao<T, PK extends Serializable> implements DaoInterface<T, P
         this.type=type;
     }
 
-    public Session openCurrentSession() {
-        currentSession = ourSessionFactory.openSession();
-        return currentSession;
+    public void finishWork() {
+        ourFactory.close();
     }
 
-    public Session openCurrentSessionwithTransaction() {
-        currentSession = ourSessionFactory.openSession();
-        currentTransaction = currentSession.beginTransaction();
-        return currentSession;
+    private static EntityManager getEntityManager() {
+        return ourFactory.createEntityManager();
     }
-
-    public void closeCurrentSession() {
-        currentSession.close();
-    }
-
-    public void closeCurrentSessionwithTransaction() {
-        currentTransaction.commit();
-        currentSession.close();
-    }
-
-    public Session getCurrentSession() {
-        return currentSession;
-    }
-
-
 
     public void create(T entity) {
-        openCurrentSessionwithTransaction();
-        getCurrentSession().save(entity);
-        closeCurrentSessionwithTransaction();
+        EntityManager entityManager = getEntityManager();
+        entityManager.getTransaction().begin();
+        entityManager.persist(entity);
+        entityManager.getTransaction().commit();
+        entityManager.close();
     }
 
     public void update(T entity) {
-        openCurrentSessionwithTransaction();
-        getCurrentSession().update(entity);
-        closeCurrentSessionwithTransaction();
+        EntityManager entityManager = getEntityManager();
+        entityManager.getTransaction().begin();
+        entityManager.merge(entity);
+        entityManager.getTransaction().commit();
+        entityManager.close();
     }
 
     public T findById(PK id) {
-        openCurrentSession();
-        T entity = getCurrentSession().get(type, id);
-        closeCurrentSession();
+        EntityManager entityManager = getEntityManager();
+        T entity = entityManager.find(type, id);
+        entityManager.close();
         return entity;
     }
 
     public void delete(T entity) {
-        openCurrentSessionwithTransaction();
-        getCurrentSession().delete(entity);
-        closeCurrentSessionwithTransaction();
+        EntityManager entityManager = getEntityManager();
+        entityManager.getTransaction().begin();
+        entityManager.remove(entity);
+        entityManager.getTransaction().commit();
+        entityManager.close();
     }
 
     @SuppressWarnings("unchecked")
     public List<T> selectAll() {
-        openCurrentSession();
-        List<T> entities = (List<T>) getCurrentSession().createQuery("from "+type.getSimpleName()).list();
-        closeCurrentSession();
+        EntityManager entityManager = getEntityManager();
+        List<T> entities = (List<T>) entityManager.createQuery("select * from "+type.getSimpleName()).getResultList();
+        entityManager.close();
         return entities;
     }
 
