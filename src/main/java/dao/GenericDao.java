@@ -7,7 +7,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
-public class HibernateDao<T, PK extends Serializable> implements DaoInterface<T, PK> {
+public class GenericDao<T, PK extends Serializable> implements DaoInterface<T, PK> {
     private static final SessionFactory ourSessionFactory;
     private Session currentSession;
     private Transaction currentTransaction;
@@ -23,7 +23,7 @@ public class HibernateDao<T, PK extends Serializable> implements DaoInterface<T,
         }
     }
 
-    public HibernateDao(Class <T> type) {
+    public GenericDao(Class <T> type) {
         this.type=type;
     }
 
