@@ -6,4 +6,6 @@ import javax.ejb.Stateless;
 public class LoginBean {
     public LoginBean() {
     }
+
+
 }

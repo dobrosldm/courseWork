@@ -30,7 +30,7 @@ public class GenericDao<T, PK extends Serializable> implements DaoInterface<T, P
         ourFactory.close();
     }
 
-    private static EntityManager getEntityManager() {
+    protected static EntityManager getEntityManager() {
         return ourFactory.createEntityManager();
     }
 
