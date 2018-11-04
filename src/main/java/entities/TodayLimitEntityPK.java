@@ -15,6 +15,9 @@ public class TodayLimitEntityPK implements Serializable {
     /** Идентификатор транспорта */
     private int transportId;
 
+    public TodayLimitEntityPK() {
+    }
+
     /** Создает связку ключей для ежедневного лимита с заданными параметрами */
     public TodayLimitEntityPK(int userId, int transportId) {
         this.userId = userId;
@@ -24,8 +27,8 @@ public class TodayLimitEntityPK implements Serializable {
     /**
      * @return Идентификатор пользователя
      */
-    @Column(name = "ид_пользователя", nullable = false)
     @Id
+    @Column(name = "ид_пользователя", nullable = false)
     public int getUserId() {
         return userId;
     }
@@ -40,8 +43,8 @@ public class TodayLimitEntityPK implements Serializable {
     /**
      * @return Идентификатор транспорта
      */
-    @Column(name = "ид_транспорта", nullable = false)
     @Id
+    @Column(name = "ид_транспорта", nullable = false)
     public int getTransportId() {
         return transportId;
     }

@@ -3,21 +3,28 @@ package entities;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Id;
 import java.io.Serializable;
+import java.util.Objects;
 
-@Embeddable
-public class ConverterEntityKey implements Serializable {
+public class ConverterEntityPK implements Serializable {
     /** Идентификатор первого вида транспорта */
     private int transport1;
     /** Идентификатор второго вида транспорта */
     private int transport2;
-    /** Коэффициент конвертации */
-    private float ratio;
+
+    public ConverterEntityPK() {
+    }
+
+    public ConverterEntityPK(int transport1, int transport2) {
+        this.transport1 = transport1;
+        this.transport2 = transport2;
+    }
 
     /**
      * @return Идентификатор первого вида транспорта
      */
-    @Basic
+    @Id
     @Column(name = "транс_1", nullable = false)
     public int getTransport1() {
         return transport1;
@@ -33,7 +40,7 @@ public class ConverterEntityKey implements Serializable {
     /**
      * @return Идентификатор второго вида транспорта
      */
-    @Basic
+    @Id
     @Column(name = "транс_2", nullable = false)
     public int getTransport2() {
         return transport2;
@@ -46,48 +53,18 @@ public class ConverterEntityKey implements Serializable {
         this.transport2 = transport2;
     }
 
-    /**
-     * @return Значение коэффициента конвертации
-     */
-    @Basic
-    @Column(name = "коэффициент", nullable = false, precision = 0)
-    public float getRatio() {
-        return ratio;
-    }
-
-    /**
-     * Функция для определения значения коэффициента конвертации
-     */
-    public void setRatio(float ratio) {
-        this.ratio = ratio;
-    }
-
-
-    /**
-     * @return Boolean значение, равны ли сравниваемые объекты
-     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ConverterEntityKey that = (ConverterEntityKey) o;
-
-        if (transport1 != that.transport1) return false;
-        if (transport2 != that.transport2) return false;
-        if (Float.compare(that.ratio, ratio) != 0) return false;
-
-        return true;
+        if (!(o instanceof ConverterEntityPK)) return false;
+        ConverterEntityPK that = (ConverterEntityPK) o;
+        return getTransport1() == that.getTransport1() &&
+                getTransport2() == that.getTransport2();
     }
 
-    /**
-     * @return Хэш-код объекта ConverterEntity
-     */
     @Override
     public int hashCode() {
-        int result = transport1;
-        result = 31 * result + transport2;
-        result = 31 * result + (ratio != +0.0f ? Float.floatToIntBits(ratio) : 0);
-        return result;
+
+        return Objects.hash(getTransport1(), getTransport2());
     }
 }

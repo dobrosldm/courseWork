@@ -13,10 +13,9 @@ public class UserDao extends GenericDao<UserEntity, Integer> {
 
     public UserEntity findByEmail(String email) {
         EntityManager entityManager = getEntityManager();
-
         CriteriaQuery<UserEntity> criteria = entityManager.getCriteriaBuilder().createQuery(UserEntity.class);
-        Root<UserEntity> userEntityRootRoot = criteria.from(UserEntity.class);
-        criteria.where(entityManager.getCriteriaBuilder().equal(userEntityRootRoot.get("email"), email));
+        Root<UserEntity> userEntityRoot = criteria.from(UserEntity.class);
+        criteria.where(entityManager.getCriteriaBuilder().equal(userEntityRoot.get("email"), email));
         UserEntity entity = entityManager.createQuery(criteria).getSingleResult();
         entityManager.close();
         return entity;

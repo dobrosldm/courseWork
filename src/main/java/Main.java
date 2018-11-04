@@ -1,7 +1,10 @@
+import beans.ConverterBean;
+import beans.LoginBean;
 import dao.GenericDao;
 import dao.UserDao;
 import entities.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.logging.Level;
 
 /**
@@ -11,8 +14,7 @@ import java.util.logging.Level;
  */
 public class Main {
     public static void main(final String[] args) {
-        UserDao dao = new UserDao();
-        System.out.println(dao.findByEmail("arsewewe_bakaeva@teodorovna.ru").getName());
-        dao.finishWork();
+        ConverterBean converterBean = new ConverterBean();
+        System.out.println(converterBean.convert(1, 2, 15));
     }
 }
