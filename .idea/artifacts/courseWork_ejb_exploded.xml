@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-ejb" name="courseWork:ejb exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/courseWork_ejb_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="courseWork/ejb/EJB" />
+      <element id="javaee-facet-classes" facet="courseWork/ejb/EJB" />
+    </root>
+  </artifact>
+</component>

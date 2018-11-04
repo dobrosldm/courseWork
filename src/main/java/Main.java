@@ -11,7 +11,7 @@ import java.util.logging.Level;
 public class Main {
     public static void main(final String[] args) {
         GenericDao<FuelEntity, Integer> dao = new GenericDao<>(FuelEntity.class);
-
+        System.out.println(dao.selectAll().get(3).getId().getNaming());
         dao.finishWork();
     }
 }
