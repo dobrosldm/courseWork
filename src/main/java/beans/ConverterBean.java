@@ -7,14 +7,14 @@ import javax.ejb.Stateful;
 
 @Stateful(name = "ConverterEJB")
 public class ConverterBean {
-    LoginBean loginBean;
+    AuthBean authBean;
 
     public ConverterBean() {
-        loginBean = new LoginBean();
+        authBean = new AuthBean();
     }
 
-    public boolean convert(int from, int to, float howMuchTo){
-        UserEntity user = loginBean.getLoginedUser();
+    /*public boolean convert(int from, int to, float howMuchTo){
+        UserEntity user = authBean.getLoginedUser();
         GenericDao<TodayLimitEntity, TodayLimitEntityPK> todayLimits = new GenericDao<>(TodayLimitEntity.class);
         GenericDao<ConverterEntity, ConverterEntityPK> converter = new GenericDao<>(ConverterEntity.class);
 
@@ -35,5 +35,5 @@ public class ConverterBean {
             todayLimits.finishWork();
             return false;
         }
-    }
+    }*/
 }
