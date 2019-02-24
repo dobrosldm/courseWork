@@ -33,17 +33,20 @@ public class UserEntity {
     private short familySize;
     /** Идентификатор льготы пользователя */
     private int preferenceId;
+    /** Пароль пользователя */
+    private String password;
 
     /** Создает нового пустого пользователя
-     *  @see UserEntity#UserEntity(int, String, String, String, String, Date, String, String, boolean, short, int)
+     *  @see UserEntity#UserEntity(int, String, String, String, String, String, Date, String, String, boolean, short, int)
      */
     public UserEntity() {}
 
     /** Создает нового пользователя с заданными параметрами
      *  @see UserEntity#UserEntity()
      */
-    public UserEntity(int id, String name, String surname, String middleName, String sex, Date birthDate, String mobileTelephone, String email, boolean disability, short familySize, int preferenceId) {
+    public UserEntity(int id, String password, String name, String surname, String middleName, String sex, Date birthDate, String mobileTelephone, String email, boolean disability, short familySize, int preferenceId) {
         this.id = id;
+        this.password = password;
         this.name = name;
         this.surname = surname;
         this.middleName = middleName;
@@ -70,6 +73,22 @@ public class UserEntity {
      */
     public void setId(int id) {
         this.id = id;
+    }
+
+    /**
+     * @return Пароль пользователя
+     */
+    @Id
+    @Column(name = "пароль", length = 30)
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * Функция для определения пароля пользователя
+     */
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     /**

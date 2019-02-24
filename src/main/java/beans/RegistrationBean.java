@@ -5,14 +5,29 @@ import entities.UserEntity;
 
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
 import java.sql.Date;
 
-@Stateless(name = "RegistrationEJB")
+@Stateless
+@Path("auth")
 public class RegistrationBean {
     public RegistrationBean() {
     }
 
-    public boolean signUp(String name, String surname, String middleName, String email, String sex, String birthDateStr, String mobileTelephone, boolean disability, short familySize) {
+    //String name, String surname, String middleName, String email, String sex, String birthDateStr, String mobileTelephone, boolean disability, short familySize
+
+    @POST
+    @Path("register")
+    public String register(@FormParam("email") String email, @FormParam("firstPassword") String firstPassword,
+                           @FormParam("secondPassword") String secondPassword,
+                           @Context HttpServletResponse resp, @Context HttpServletRequest req) {
+
         boolean alreadyExists = false;
 
         UserDao userDao = new UserDao();
@@ -22,23 +37,29 @@ public class RegistrationBean {
             alreadyExists = true;
         }
 
-        if (alreadyExists) {
-            return false;
+        if (alreadyExists || !firstPassword.equals(secondPassword)) {
+            //Response.status(Response.Status.FORBIDDEN).entity("Error!").build();
+            return "неа";
         }
 
+
+
         UserEntity user = new UserEntity();
-        user.setName(name);
-        user.setSurname(surname);
-        if (middleName != null) user.setMiddleName(middleName);
+        user.setId(userDao.selectAll().size()+1);
+        //user.setName(name);
+        //user.setSurname(surname);
+        //if (middleName != null) user.setMiddleName(middleName);
         user.setEmail(email);
-        user.setSex(sex);
-        user.setBirthDate(Date.valueOf(birthDateStr));
-        if (mobileTelephone != null) user.setMobileTelephone(mobileTelephone);
-        user.setDisability(disability);
-        user.setFamilySize(familySize);
+        user.setPassword(firstPassword);
+        //user.setSex(sex);
+        //user.setBirthDate(Date.valueOf(birthDateStr));
+        //if (mobileTelephone != null) user.setMobileTelephone(mobileTelephone);
+        //user.setDisability(disability);
+        //user.setFamilySize(familySize);
 
         userDao.create(user);
 
-        return true;
+        return "ага";
+        //return Response.status(Response.Status.OK).entity("Registration completed").build();
     }
 }

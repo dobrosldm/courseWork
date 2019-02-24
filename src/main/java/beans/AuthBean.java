@@ -13,12 +13,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 
 @Stateless
-//@Path("auth")
+@Path("auth")
 public class AuthBean {
     /*UserDao userDao = new UserDao();
     private UserEntity loginedUser = userDao.findById(1);*/
 
-    /*public AuthBean() {}
+    public AuthBean() {}
 
     @POST
     @Path("login")
@@ -27,11 +27,11 @@ public class AuthBean {
         try {
             req.login(login, password);
         } catch (ServletException se) {
-            return false;
+            return "nea";
         }
 
-        return true;
-    }*/
+        return "aga";
+    }
 
     /*public UserEntity getLoginedUser() {
         return loginedUser;
