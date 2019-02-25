@@ -3,16 +3,17 @@ package beans;
 import dao.UserDao;
 import entities.UserEntity;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import java.sql.Date;
+import java.io.IOException;
 
 @Stateless
 @Path("auth")
@@ -28,18 +29,18 @@ public class RegistrationBean {
                            @FormParam("secondPassword") String secondPassword,
                            @Context HttpServletResponse resp, @Context HttpServletRequest req) {
 
-        boolean alreadyExists = false;
+        boolean alreadyExists = true;
 
         UserDao userDao = new UserDao();
         try {
             userDao.findByEmail(email);
         } catch (NoResultException e) {
-            alreadyExists = true;
+            alreadyExists = false;
         }
 
         if (alreadyExists || !firstPassword.equals(secondPassword)) {
             //Response.status(Response.Status.FORBIDDEN).entity("Error!").build();
-            return "неа";
+            return "nop";
         }
 
 
@@ -59,7 +60,17 @@ public class RegistrationBean {
 
         userDao.create(user);
 
-        return "ага";
+        return "yep";
         //return Response.status(Response.Status.OK).entity("Registration completed").build();
+    }
+
+    @GET
+    @Path("logout")
+    @RolesAllowed({"users"})
+    public void logout(@Context HttpServletResponse response,
+                       @Context HttpServletRequest request) throws IOException
+    {
+        request.getSession().invalidate();
+        response.sendRedirect(request.getContextPath());
     }
 }

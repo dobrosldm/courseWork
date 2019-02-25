@@ -5,13 +5,13 @@ import entities.*;
 
 import javax.ejb.Stateful;
 
-@Stateful(name = "ConverterEJB")
+@Stateful
 public class ConverterBean {
-    AuthBean authBean;
+    /*AuthBean authBean;
 
     public ConverterBean() {
         authBean = new AuthBean();
-    }
+    }*/
 
     /*public boolean convert(int from, int to, float howMuchTo){
         UserEntity user = authBean.getLoginedUser();
