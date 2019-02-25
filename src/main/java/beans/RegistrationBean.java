@@ -24,42 +24,56 @@ public class RegistrationBean {
 
     @POST
     @Path("register")
-    public String register(@FormParam("email") String email, @FormParam("firstPassword") String firstPassword,
+    public String register(@FormParam("email") String email,
+                           @FormParam("firstPassword") String firstPassword,
                            @FormParam("secondPassword") String secondPassword,
+                           @FormParam("name") String name,
+                           @FormParam("surname") String surname,
+                           @FormParam("middlename") String middlename,
+                           @FormParam("sex") String sex,
+                           @FormParam("birthDate") Date birthDate,
+                           @FormParam("mobileTelephone") String mobileTelephone,
+                           @FormParam("disability") boolean disability,
+                           @FormParam("familySize") short familySize,
                            @Context HttpServletResponse resp, @Context HttpServletRequest req) {
 
-        boolean alreadyExists = false;
+        boolean alreadyExists = true;
 
         UserDao userDao = new UserDao();
         try {
             userDao.findByEmail(email);
         } catch (NoResultException e) {
-            alreadyExists = true;
+            alreadyExists = false;
         }
 
         if (alreadyExists || !firstPassword.equals(secondPassword)) {
             //Response.status(Response.Status.FORBIDDEN).entity("Error!").build();
-            return "неа";
+            return "nea";
         }
 
 
 
         UserEntity user = new UserEntity();
-        user.setId(userDao.selectAll().size()+1);
-        //user.setName(name);
-        //user.setSurname(surname);
-        //if (middleName != null) user.setMiddleName(middleName);
+        //user.setId(userDao.selectAll().size()+1);
+        user.setName(name);
+        user.setSurname(surname);
+        if (middlename != null)
+            user.setMiddleName(middlename);
         user.setEmail(email);
         user.setPassword(firstPassword);
-        //user.setSex(sex);
-        //user.setBirthDate(Date.valueOf(birthDateStr));
-        //if (mobileTelephone != null) user.setMobileTelephone(mobileTelephone);
-        //user.setDisability(disability);
-        //user.setFamilySize(familySize);
+        user.setSex(sex);
+        user.setBirthDate(birthDate);
+        if (mobileTelephone != null)
+            user.setMobileTelephone(mobileTelephone);
+        user.setDisability(true);
+        user.setFamilySize(familySize);
+
+        // TODO: change
+        user.setPreferenceId(3);
 
         userDao.create(user);
 
-        return "ага";
+        return "aga";
         //return Response.status(Response.Status.OK).entity("Registration completed").build();
     }
 }
