@@ -28,24 +28,20 @@ public class UserEntity implements Serializable {
     private String mobileTelephone;
     /** Эл. почта пользователя */
     private String email;
-    /** Имеет ли пользователь инвалидность */
-    private boolean disability;
-    /** Размер семьи пользователя */
-    private short familySize;
     /** Идентификатор льготы пользователя */
     private int preferenceId;
     /** Пароль пользователя */
     private String password;
 
     /** Создает нового пустого пользователя
-     *  @see UserEntity#UserEntity(int, String, String, String, String, String, Date, String, String, boolean, short, int)
+     *  @see UserEntity#UserEntity(int, String, String, String, String, String, Date, String, String, int)
      */
     public UserEntity() {}
 
     /** Создает нового пользователя с заданными параметрами
      *  @see UserEntity#UserEntity()
      */
-    public UserEntity(int id, String password, String name, String surname, String middleName, String sex, Date birthDate, String mobileTelephone, String email, boolean disability, short familySize, int preferenceId) {
+    public UserEntity(int id, String password, String name, String surname, String middleName, String sex, Date birthDate, String mobileTelephone, String email, int preferenceId) {
         this.id = id;
         this.password = password;
         this.name = name;
@@ -55,8 +51,6 @@ public class UserEntity implements Serializable {
         this.birthDate = birthDate;
         this.mobileTelephone = mobileTelephone;
         this.email = email;
-        this.disability = disability;
-        this.familySize = familySize;
         this.preferenceId = preferenceId;
     }
 
@@ -64,6 +58,7 @@ public class UserEntity implements Serializable {
      * @return Идентификатор пользователя
      */
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ид", nullable = false)
     public int getId() {
         return id;
@@ -79,7 +74,6 @@ public class UserEntity implements Serializable {
     /**
      * @return Пароль пользователя
      */
-    @Id
     @Column(name = "пароль", length = 30)
     public String getPassword() {
         return password;
@@ -205,38 +199,6 @@ public class UserEntity implements Serializable {
     }
 
     /**
-     * @return Boolean значение, указывающее на наличие у пользователя инвалидности
-     */
-    @Basic
-    @Column(name = "инвалидность", nullable = false)
-    public boolean isDisability() {
-        return disability;
-    }
-
-    /**
-     * Функция для определения boolean значения, указывающего на наличие у пользователя инвалидности
-     */
-    public void setDisability(boolean disability) {
-        this.disability = disability;
-    }
-
-    /**
-     * @return Размер семьи пользователя
-     */
-    @Basic
-    @Column(name = "размер_семьи", nullable = false)
-    public short getFamilySize() {
-        return familySize;
-    }
-
-    /**
-     * Функция для определения размера семьи пользователя
-     */
-    public void setFamilySize(short familySize) {
-        this.familySize = familySize;
-    }
-
-    /**
      * @return Идентификатор льготы пользователя
      */
     @Basic
@@ -263,8 +225,6 @@ public class UserEntity implements Serializable {
         UserEntity that = (UserEntity) o;
 
         if (id != that.id) return false;
-        if (disability != that.disability) return false;
-        if (familySize != that.familySize) return false;
         if (preferenceId != that.preferenceId) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
         if (surname != null ? !surname.equals(that.surname) : that.surname != null) return false;
@@ -290,8 +250,6 @@ public class UserEntity implements Serializable {
         result = 31 * result + (birthDate != null ? birthDate.hashCode() : 0);
         result = 31 * result + (mobileTelephone != null ? mobileTelephone.hashCode() : 0);
         result = 31 * result + (email != null ? email.hashCode() : 0);
-        result = 31 * result + (disability ? 1 : 0);
-        result = 31 * result + (int) familySize;
         result = 31 * result + preferenceId;
         return result;
     }

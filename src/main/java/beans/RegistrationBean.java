@@ -1,7 +1,9 @@
 package beans;
 
+import dao.GenericDao;
 import dao.UserDao;
 import entities.UserEntity;
+import entities.UserGroupsEntity;
 
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
@@ -12,6 +14,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.xml.bind.DatatypeConverter;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 
 @Stateless
@@ -35,6 +41,7 @@ public class RegistrationBean {
                            @FormParam("mobileTelephone") String mobileTelephone,
                            @FormParam("disability") boolean disability,
                            @FormParam("familySize") short familySize,
+                           @FormParam("preference") String preference,
                            @Context HttpServletResponse resp, @Context HttpServletRequest req) {
 
         boolean alreadyExists = true;
@@ -54,22 +61,32 @@ public class RegistrationBean {
 
 
         UserEntity user = new UserEntity();
-        //user.setId(userDao.selectAll().size()+1);
+        //user.setId(userDao.selectAll().size());
         user.setName(name);
         user.setSurname(surname);
         if (middlename != null)
             user.setMiddleName(middlename);
         user.setEmail(email);
-        user.setPassword(firstPassword);
         user.setSex(sex);
         user.setBirthDate(birthDate);
         if (mobileTelephone != null)
             user.setMobileTelephone(mobileTelephone);
-        user.setDisability(true);
-        user.setFamilySize(familySize);
+        user.setPreferenceId(Integer.valueOf(preference));
 
-        // TODO: change
-        user.setPreferenceId(3);
+        GenericDao<UserGroupsEntity, String> userGroupsDao = new GenericDao<>(UserGroupsEntity.class);
+        UserGroupsEntity userGroups = new UserGroupsEntity();
+        userGroups.setEmail(email);
+        userGroups.setGroup("user");
+        userGroupsDao.create(userGroups);
+
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(firstPassword.getBytes("UTF-8"));
+            byte[] digest = md.digest();
+            user.setPassword(DatatypeConverter.printBase64Binary(digest));
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
         userDao.create(user);
 
