@@ -18,8 +18,8 @@ import java.sql.Date;
 
 @Stateless
 @Path("auth")
-public class RegistrationBean {
-    public RegistrationBean() {
+public class AuthBean {
+    public AuthBean() {
     }
 
     //String name, String surname, String middleName, String email, String sex, String birthDateStr, String mobileTelephone, boolean disability, short familySize
@@ -67,8 +67,7 @@ public class RegistrationBean {
         user.setBirthDate(birthDate);
         if (mobileTelephone != null)
             user.setMobileTelephone(mobileTelephone);
-        user.setDisability(true);
-        user.setFamilySize(familySize);
+
 
         // TODO: change
         user.setPreferenceId(3);
@@ -79,12 +78,11 @@ public class RegistrationBean {
         //return Response.status(Response.Status.OK).entity("Registration completed").build();
     }
 
-    @GET
+    @POST
     @Path("logout")
     @RolesAllowed({"users"})
     public void logout(@Context HttpServletResponse response,
-                       @Context HttpServletRequest request) throws IOException
-    {
+                       @Context HttpServletRequest request) throws IOException {
         request.getSession().invalidate();
         response.sendRedirect(request.getContextPath());
     }

@@ -46,6 +46,7 @@ public class RouteEntity {
      * @return Идентификатор маршрута
      */
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ид", nullable = false)
     public int getId() {
         return id;

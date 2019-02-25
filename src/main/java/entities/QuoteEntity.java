@@ -33,6 +33,7 @@ public class QuoteEntity {
      * @return Идентификатор квоты
      */
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ид", nullable = false)
     public int getId() {
         return id;

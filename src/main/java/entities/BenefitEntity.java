@@ -36,6 +36,7 @@ public class BenefitEntity {
      * @return Идентификатор льготы
      */
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ид", nullable = false)
     public int getId() {
         return id;

@@ -34,7 +34,7 @@
 
     <security-role>
         <description/>
-        <role-name>users</role-name>
+        <role-name>user</role-name>
     </security-role>
 
     <security-constraint>
@@ -44,7 +44,7 @@
             <url-pattern>/secret.html</url-pattern>
         </web-resource-collection>
         <auth-constraint>
-            <role-name>users</role-name>
+            <role-name>user</role-name>
         </auth-constraint>
         <user-data-constraint>
             <transport-guarantee>NONE</transport-guarantee>

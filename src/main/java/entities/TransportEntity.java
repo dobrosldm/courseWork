@@ -38,6 +38,7 @@ public class TransportEntity {
      * @return Идентификатор транспорта
      */
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ид", nullable = false)
     public int getId() {
         return id;
