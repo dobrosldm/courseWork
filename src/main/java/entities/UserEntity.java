@@ -34,14 +34,14 @@ public class UserEntity implements Serializable {
     private String password;
 
     /** Создает нового пустого пользователя
-     *  @see UserEntity#UserEntity(int, String, String, String, String, String, Date, String, String, boolean, short, int)
+     *  @see UserEntity#UserEntity(int, String, String, String, String, String, Date, String, String, int)
      */
     public UserEntity() {}
 
     /** Создает нового пользователя с заданными параметрами
      *  @see UserEntity#UserEntity()
      */
-    public UserEntity(int id, String password, String name, String surname, String middleName, String sex, Date birthDate, String mobileTelephone, String email, boolean disability, short familySize, int preferenceId) {
+    public UserEntity(int id, String password, String name, String surname, String middleName, String sex, Date birthDate, String mobileTelephone, String email, int preferenceId) {
         this.id = id;
         this.password = password;
         this.name = name;
