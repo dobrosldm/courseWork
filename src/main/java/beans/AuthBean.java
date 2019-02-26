@@ -2,8 +2,7 @@ package beans;
 
 import dao.GenericDao;
 import dao.UserDao;
-import entities.UserEntity;
-import entities.UserGroupsEntity;
+import entities.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
@@ -14,6 +13,7 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -24,10 +24,6 @@ import java.sql.Date;
 @Stateless
 @Path("auth")
 public class AuthBean {
-    public AuthBean() {
-    }
-
-    //String name, String surname, String middleName, String email, String sex, String birthDateStr, String mobileTelephone, boolean disability, short familySize
 
     @POST
     @Path("register")
@@ -56,7 +52,7 @@ public class AuthBean {
 
         if (alreadyExists || !firstPassword.equals(secondPassword)) {
             //Response.status(Response.Status.FORBIDDEN).entity("Error!").build();
-            return "nea";
+            return "Error while register!";
         }
 
 
@@ -91,13 +87,20 @@ public class AuthBean {
 
         userDao.create(user);
 
-        return "aga";
+        user = userDao.findByEmail(email);
+        GenericDao<TodayLimitEntity, TodayLimitEntityPK> todayLimits = new GenericDao<>(TodayLimitEntity.class);
+        GenericDao<TransportEntity, Integer> transport = new GenericDao<>(TransportEntity.class);
+        for (int i = 0; i < transport.selectAll().size(); i++) {
+            todayLimits.create(new TodayLimitEntity(user.getId(), transport.selectAll().get(i).getId(), 1f));
+        }
+
+        return "Successfully registered!";
         //return Response.status(Response.Status.OK).entity("Registration completed").build();
     }
 
     @POST
     @Path("logout")
-    @RolesAllowed({"users"})
+    @RolesAllowed({"user"})
     public void logout(@Context HttpServletResponse response,
                        @Context HttpServletRequest request) throws IOException {
         request.getSession().invalidate();

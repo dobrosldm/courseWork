@@ -1,20 +1,36 @@
 package beans;
 
-import dao.*;
+import dao.GenericDao;
+import dao.UserDao;
 import entities.*;
 
-import javax.ejb.Stateful;
+import javax.annotation.Resource;
+import javax.annotation.security.RolesAllowed;
+import javax.ejb.SessionContext;
+import javax.ejb.Stateless;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
 
-@Stateful
+@Stateless
+@Path("converter")
+@RolesAllowed("user")
 public class ConverterBean {
-    /*AuthBean authBean;
 
-    public ConverterBean() {
-        authBean = new AuthBean();
-    }*/
+    @Resource
+    private SessionContext sessionContext;
 
-    /*public boolean convert(int from, int to, float howMuchTo){
-        UserEntity user = authBean.getLoginedUser();
+    @POST
+    public boolean convert(@FormParam("from") String fromStr,
+                           @FormParam("to") String toStr,
+                           @FormParam("howMuchTo") String howMuchToStr) {
+
+        int from = Integer.parseInt(fromStr);
+        int to = Integer.parseInt(toStr);
+        float howMuchTo = Float.parseFloat(howMuchToStr);
+
+        UserDao userDao = new UserDao();
+        UserEntity user = userDao.findByEmail(sessionContext.getCallerPrincipal().getName());
         GenericDao<TodayLimitEntity, TodayLimitEntityPK> todayLimits = new GenericDao<>(TodayLimitEntity.class);
         GenericDao<ConverterEntity, ConverterEntityPK> converter = new GenericDao<>(ConverterEntity.class);
 
@@ -35,5 +51,5 @@ public class ConverterBean {
             todayLimits.finishWork();
             return false;
         }
-    }*/
+    }
 }
