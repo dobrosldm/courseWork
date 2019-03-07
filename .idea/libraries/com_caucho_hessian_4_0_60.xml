@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="com.caucho:hessian:4.0.60" type="repository">
+    <properties maven-id="com.caucho:hessian:4.0.60" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/hessian-4.0.60.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
