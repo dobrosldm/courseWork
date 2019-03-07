@@ -1,29 +1,70 @@
 package beans;
 
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpResponse;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
 import dao.GenericDao;
 import dao.UserDao;
 import entities.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
+import javax.net.ssl.HttpsURLConnection;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.*;
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.annotation.Annotation;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 @Stateless
 @Path("auth")
 public class AuthBean {
+
+    @POST
+    @Path("vkGetCode")
+    public void vkGetCode(@Context HttpServletResponse response, @Context HttpServletRequest request) throws IOException {
+        response.sendRedirect("https://oauth.vk.com/authorize?" +
+                "client_id=6877006" +
+                "&display=page" +
+                "&redirect_uri=http://localhost:24315/courseWork/api/auth/vkGetAccessToken" +
+                "&scope=email" +
+                "&response_type=code" +
+                "&v=5.92");
+    }
+
+    @GET
+    @Path("vkGetAccessToken")
+    public String vkGetAccessToken(@Context HttpServletResponse response, @Context HttpServletRequest request) throws IOException {
+        response.sendRedirect("https://oauth.vk.com/access_token?" +
+                "client_id=6877006" +
+                "&client_secret=Uak5frN9r3oE7Fii7fJ9" +
+                "&redirect_uri=http://localhost:24315/courseWork/api/auth/vkGetAccessToken" +
+                "&code=" + request.getParameter("code"));
+
+        return "HEY!";
+    }
 
     @POST
     @Path("register")
@@ -36,8 +77,6 @@ public class AuthBean {
                            @FormParam("sex") String sex,
                            @FormParam("birthDate") Date birthDate,
                            @FormParam("mobileTelephone") String mobileTelephone,
-                           @FormParam("disability") boolean disability,
-                           @FormParam("familySize") short familySize,
                            @FormParam("preference") String preference,
                            @Context HttpServletResponse resp, @Context HttpServletRequest req) {
 

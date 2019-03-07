@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>feedback</title>
+</head>
+<body>
+    <center>
+        <form action="api/placeFeedback" method="POST">
+            <div>
+                name:<br>
+                <input type="text" name="name">
+            </div>
+            <div>
+                email:<br>
+                <input type="text" name="email">
+            </div>
+            <div>
+                text (max 500 symbols):<br>
+                <input type="text" name="message">
+            </div>
+            <button type="submit" value="place">place</button>
+        </form>
+    </center>
+</body>
+</html>
