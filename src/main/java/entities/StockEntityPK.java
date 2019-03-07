@@ -24,6 +24,9 @@ public class StockEntityPK implements Serializable {
         this.stockMonth = stockMonth;
     }
 
+    public StockEntityPK() {
+    }
+
     /**
      * @return Название акции
      */

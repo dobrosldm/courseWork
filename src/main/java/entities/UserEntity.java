@@ -28,20 +28,22 @@ public class UserEntity implements Serializable {
     private String mobileTelephone;
     /** Эл. почта пользователя */
     private String email;
+    /** Ид пользователя в Telegram */
+    private Integer telegramId;
     /** Идентификатор льготы пользователя */
     private int preferenceId;
     /** Пароль пользователя */
     private String password;
 
     /** Создает нового пустого пользователя
-     *  @see UserEntity#UserEntity(int, String, String, String, String, String, Date, String, String, int)
+     *  @see UserEntity#UserEntity(int, String, String, String, String, String, Date, String, String, int, Integer)
      */
     public UserEntity() {}
 
     /** Создает нового пользователя с заданными параметрами
      *  @see UserEntity#UserEntity()
      */
-    public UserEntity(int id, String password, String name, String surname, String middleName, String sex, Date birthDate, String mobileTelephone, String email, int preferenceId) {
+    public UserEntity(int id, String password, String name, String surname, String middleName, String sex, Date birthDate, String mobileTelephone, String email, int preferenceId, Integer telegramId) {
         this.id = id;
         this.password = password;
         this.name = name;
@@ -49,6 +51,7 @@ public class UserEntity implements Serializable {
         this.middleName = middleName;
         this.sex = sex;
         this.birthDate = birthDate;
+        this.telegramId = telegramId;
         this.mobileTelephone = mobileTelephone;
         this.email = email;
         this.preferenceId = preferenceId;
@@ -197,6 +200,24 @@ public class UserEntity implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    /**
+     * @return Ид пользователя в Telegram
+     */
+    @Basic
+    @Column(name = "телеграм_ид", nullable = true)
+    public Integer getTelegramId() {
+        return telegramId;
+    }
+
+    /**
+     * Функция для ид пользователя в Telegram
+     */
+    public void setTelegramId(Integer telegramId) {
+        this.telegramId = telegramId;
+    }
+
+
 
     /**
      * @return Идентификатор льготы пользователя

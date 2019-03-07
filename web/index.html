@@ -1,10 +1,11 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>index</title>
 </head>
 <body>
-  <h1>Hi</h1>
+  <h1>Hi, <a href="api/stocks">проверь трушные ли у нас акции</a></h1>
   <center>
     <form name="form" method="post" action="j_security_check">
       <div>
@@ -20,6 +21,9 @@
       </div>
     </form>
     <br>
+    <form action="api/auth/googleCode" method="POST">
+      <button type="submit">Зайти через Google</button>
+    </form>
     <a href="register.html">Register</a>
   </center>
 </body>

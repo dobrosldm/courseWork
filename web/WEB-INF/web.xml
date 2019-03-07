@@ -37,6 +37,11 @@
         <role-name>user</role-name>
     </security-role>
 
+    <security-role>
+            <description/>
+            <role-name>Ouser</role-name>
+    </security-role>
+
     <security-constraint>
         <display-name>Restricted to users</display-name>
         <web-resource-collection>
@@ -45,6 +50,7 @@
         </web-resource-collection>
         <auth-constraint>
             <role-name>user</role-name>
+            <role-name>Ouser</role-name>
         </auth-constraint>
         <user-data-constraint>
             <transport-guarantee>NONE</transport-guarantee>

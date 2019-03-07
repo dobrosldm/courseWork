@@ -34,7 +34,7 @@
                 <input type="text" name="middlename">
             </div>
             <div>
-                Sex:<br>
+                Gender:<br>
                 <input type="text" name="sex">
             </div>
             <div>
@@ -44,10 +44,6 @@
             <div>
                 mobileTelephone:<br>
                 <input type="text" name="mobileTelephone">
-            </div>
-            <div>
-                familySize:<br>
-                <input type="number" name="familySize">
             </div>
             <div>
                 Выберете льготу:<br>
@@ -65,6 +61,14 @@
             <div>
                 <input type="submit" value="Submit">
             </div>
+        </form>
+
+        <!--<form action="api/auth/vkGetCode" method="POST">
+            <button type="submit">Зайти через VK</button>
+        </form>
+        <a href="https://oauth.vk.com/authorize?client_id=6884651&display=page&redirect_uri=https://oauth.vk.com/blank.html&scope=offline&response_type=token&v=5.92">VK</a>-->
+        <form action="api/auth/googleCode" method="POST">
+            <button type="submit">Зарегаться через Google</button>
         </form>
     </center>
 </body>
