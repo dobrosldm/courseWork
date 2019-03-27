@@ -70,7 +70,7 @@ public class AuthBean {
         Form postForm = new Form();
         postForm.param("code", request.getParameter("code"));
         postForm.param("client_id", "896135202021-huh38ginkjct777ts4jldnm43c0o81lo.apps.googleusercontent.com");
-        postForm.param("client_secret", "asXLAbuN7zIhULMVnUTeMcdK");
+        postForm.param("client_secret", "*******");
         postForm.param("grant_type", "authorization_code");
         postForm.param("redirect_uri", "http://localhost:24315/api/auth/googleAuth");
 
