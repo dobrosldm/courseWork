@@ -2,40 +2,30 @@ package beans;
 
 import dao.GenericDao;
 import entities.FeedbackEntity;
-import org.json.simple.JSONObject;
+import requestHelpers.FeedbackInfo;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.ws.rs.FormParam;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Stateless
 @Path("placeFeedback")
 public class FeedbackBean {
 
-    @Inject
-    FeedbackSender feedbackSender = new FeedbackSender();
-
     @POST
-    @Produces("application/json")
-    public JSONObject placeFeedback(@FormParam("name") String name,
-                              @FormParam("email") String email,
-                              @FormParam("message") String message) {
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response placeFeedback(final FeedbackInfo input) {
 
-        FeedbackEntity feedbackEntity = new FeedbackEntity(name, email, message);
+        FeedbackEntity feedbackEntity = new FeedbackEntity(input.name, input.email, input.message);
 
         GenericDao<FeedbackEntity, Integer> feedbackDao = new GenericDao<>(FeedbackEntity.class);
 
-        JSONObject responseJSON = new JSONObject();
-
         feedbackDao.create(feedbackEntity);
 
-        feedbackSender.notify(name);
-
-        responseJSON.put("description", "Report feedback sent");
-
-        return responseJSON;
+        return Response.ok().entity("Report feedback sent").build();
     }
 }

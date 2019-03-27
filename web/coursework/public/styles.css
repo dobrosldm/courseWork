@@ -1,0 +1,22 @@
+.canvas {
+    border: 2px solid #000000;
+}
+
+.goodAlert {
+    color: #20a900;
+    background-color: #cbf2cf;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #67eb24;
+    border-radius: 4px;
+}
+
+.badAlert {
+    color: #a94442;
+    background-color: #f2dede;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #ebaba7;
+    border-radius: 4px;
+}
+.hidden { display:none; }

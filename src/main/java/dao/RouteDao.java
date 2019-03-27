@@ -8,18 +8,20 @@ import java.util.List;
 
 public class RouteDao extends GenericDao<RouteEntity, Integer> {
 
-    private EntityManager entityManager;
-
     public RouteDao() {
         super(RouteEntity.class);
     }
 
     public List<Object[]> createRoute(int from, int to) {
 
-        entityManager = getEntityManager();
+        EntityManager entityManager = getEntityManager();
+
+        entityManager.getTransaction().begin();
 
         Query query = entityManager.createNativeQuery("select * from route(?1, ?2);").setParameter(1, from).setParameter(2, to);
         List<Object[]> resultList = query.getResultList();
+
+        entityManager.getTransaction().commit();
 
         entityManager.close();
 

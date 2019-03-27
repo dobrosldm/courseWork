@@ -22,13 +22,18 @@
         <welcome-file>/index.html</welcome-file>
     </welcome-file-list>
 
+    <error-page>
+        <error-code>404</error-code>
+        <location>/index.html</location>
+    </error-page>
+
     <!-- SECURITY -->
     <login-config>
         <auth-method>FORM</auth-method>
         <realm-name>jdbc-realm</realm-name>
         <form-login-config>
             <form-login-page>/index.html</form-login-page>
-            <form-error-page>/error.html</form-error-page>
+            <form-error-page>/index.html</form-error-page>
         </form-login-config>
     </login-config>
 
@@ -41,6 +46,66 @@
             <description/>
             <role-name>Ouser</role-name>
     </security-role>
+
+    <security-constraint>
+        <display-name>Restricted to guests</display-name>
+        <web-resource-collection>
+            <web-resource-name>Restricted Access</web-resource-name>
+            <url-pattern>/limits/</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>user</role-name>
+            <role-name>Ouser</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>NONE</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <display-name>Restricted to guests</display-name>
+        <web-resource-collection>
+            <web-resource-name>Restricted Access</web-resource-name>
+            <url-pattern>/profile/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>user</role-name>
+            <role-name>Ouser</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>NONE</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <display-name>Restricted to users</display-name>
+        <web-resource-collection>
+            <web-resource-name>Restricted Access</web-resource-name>
+            <url-pattern>/navigation/</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>user</role-name>
+            <role-name>Ouser</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>NONE</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <display-name>Restricted to users</display-name>
+        <web-resource-collection>
+            <web-resource-name>Restricted Access</web-resource-name>
+            <url-pattern>/api/auth/logout/</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>user</role-name>
+            <role-name>Ouser</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>NONE</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
 
     <security-constraint>
         <display-name>Restricted to users</display-name>

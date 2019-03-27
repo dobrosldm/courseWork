@@ -1,23 +1,19 @@
 package beans;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import dao.GenericDao;
 import dao.RouteDao;
 import dao.TodayLimitDao;
 import dao.UserDao;
-import entities.TodayLimitEntity;
-import entities.TodayLimitEntityPK;
-import entities.TransportEntity;
-import entities.UserEntity;
+import entities.*;
+import requestHelpers.RouteInfo;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -26,7 +22,7 @@ import java.util.logging.Logger;
 
 @Stateless
 @Path("route")
-@RolesAllowed("user")
+@RolesAllowed({"user", "Ouser"})
 public class RouteBean {
 
     @Resource
@@ -34,18 +30,16 @@ public class RouteBean {
 
     private static final Logger LOG = Logger.getLogger(RouteBean.class.getName());
 
-    @GET
-    @Produces("application/json")
-    public Response showRoute(@QueryParam("from") String fromStr,
-                              @QueryParam("to") String toStr) {
-
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response showRoute(final RouteInfo input) {
         final String case1 = "Пересаживаемся на другой маршрут";
         final String case2 = "Пересаживаемся на другой номер маршрута";
 
         final String wrongStpg = "Вы ввели неверные номера остановок";
         final String noRoute = "Увы, невозможно построить маршрут, так как начальный и конечный маршруты не имеют пересечения";
 
-        JsonObject jsonObject = new JsonObject();
+        JsonArray jsonArray = new JsonArray();
 
         UserEntity user = new UserDao().findByEmail(sessionContext.getCallerPrincipal().getName());
 
@@ -62,24 +56,40 @@ public class RouteBean {
         }
 
         RouteDao routeDao = new RouteDao();
-        List<Object[]> stoppageList = routeDao.createRoute(Integer.valueOf(fromStr), Integer.valueOf(toStr));
+        List<Object[]> stoppageList = routeDao.createRoute(Integer.valueOf(input.from), Integer.valueOf(input.to));
 
         if (stoppageList.get(0)[0].equals(wrongStpg)) {
 
-            jsonObject.addProperty("warning", "wrong stoppages");
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("responseType", "warning");
+            jsonObject.addProperty("text", "wrong stoppages");
+            jsonArray.add(jsonObject);
 
         } else if (stoppageList.get(0)[0].equals(noRoute)) {
 
-            jsonObject.addProperty("warning", "route doesn't exist");
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("responseType", "warning");
+            jsonObject.addProperty("text", "route doesn't exist");
+            jsonArray.add(jsonObject);
 
         } else {
 
-            int l = 1;
+            JsonArray routesArray = new JsonArray();
+
+            GenericDao<StoppageEntity, Integer> stoppageDao = new GenericDao<>(StoppageEntity.class);
+            StoppageEntity stoppageEntity;
             for (Object[] miniRoute : stoppageList) {
-                jsonObject.addProperty("stoppageFrom"+l, miniRoute[0].toString());
-                jsonObject.addProperty("stoppageTo"+l, miniRoute[1].toString());
-                jsonObject.addProperty("transport"+l, miniRoute[2].toString());
-                l++;
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("stoppageFrom", miniRoute[0].toString());
+                stoppageEntity = stoppageDao.findById(Integer.valueOf(miniRoute[0].toString()));
+                jsonObject.addProperty("xFrom", stoppageEntity.getXCoord());
+                jsonObject.addProperty("yFrom", stoppageEntity.getYCoord());
+                jsonObject.addProperty("stoppageTo", miniRoute[1].toString());
+                stoppageEntity = stoppageDao.findById(Integer.valueOf(miniRoute[1].toString()));
+                jsonObject.addProperty("xTo", stoppageEntity.getXCoord());
+                jsonObject.addProperty("yTo", stoppageEntity.getYCoord());
+                jsonObject.addProperty("transport", miniRoute[2].toString());
+                routesArray.add(jsonObject);
 
                 if (!(miniRoute[2].toString().equals(case1) || miniRoute[2].toString().equals(case2))) {
 
@@ -87,8 +97,6 @@ public class RouteBean {
 
                         for (int j = 0; j < numberOfTransports; j++) {
 
-                            LOG.log(Level.WARNING, "todayUserLimitPerTransport[j].getTransportId()");
-                            LOG.log(Level.WARNING, String.valueOf(todayUserLimitPerTransport[j].getTransportId()));
                             if (transport.getName().equals(miniRoute[2].toString())
                                     && (transport.getId() == todayUserLimitPerTransport[j].getTransportId()))
                                 todayUserLimitPerTransport[j].setLimit(todayUserLimitPerTransport[j].getLimit() - 1);
@@ -105,27 +113,43 @@ public class RouteBean {
                     notEnough = true;
             }
 
-            if (notEnough)
-                jsonObject.addProperty("info", "not enough limit for ride :(");
-            else {
+            if (notEnough){
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("responseType", "info");
+                jsonObject.addProperty("text", "not enough limit");
+                jsonArray.add(jsonObject);
+
+                jsonArray.add(routesArray);
+            } else {
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("responseType", "info");
+                jsonObject.addProperty("text", "enough limit");
+                jsonArray.add(jsonObject);
+
+                jsonArray.add(routesArray);
+            }
+
                 TodayLimitEntity[] todayUserLimitPerTransportOld = new TodayLimitEntity[numberOfTransports];
                 TodayLimitEntityPK todayLimitEntityPKOld;
 
-                jsonObject.addProperty("spent limits for ride", "(by every transport)");
+                JsonArray paysArray = new JsonArray();
 
                 for (int q = 0; q < numberOfTransports; q++) {
-                    todayLimitEntityPKOld = new TodayLimitEntityPK(user.getId(), q+1);
+                    todayLimitEntityPKOld = new TodayLimitEntityPK(user.getId(), q + 1);
                     todayUserLimitPerTransportOld[q] = todayLimitDao.findById(todayLimitEntityPKOld);
 
-                    jsonObject.addProperty(String.valueOf(transportList.get(q).getName()), String.valueOf(todayUserLimitPerTransportOld[q].getLimit()-todayUserLimitPerTransport[q].getLimit()));
+                    JsonObject payObject = new JsonObject();
+                    payObject.addProperty("transport", String.valueOf(transportList.get(q).getName()));
+                    payObject.addProperty("spent", String.valueOf(todayUserLimitPerTransportOld[q].getLimit() - todayUserLimitPerTransport[q].getLimit()));
+                    paysArray.add(payObject);
 
-                    todayLimitDao.update(todayUserLimitPerTransport[q]);
+                    if (input.spend.equals("yes"))
+                        todayLimitDao.update(todayUserLimitPerTransport[q]);
                 }
 
-                jsonObject.addProperty("info", "thanks for ride!");
-            }
+                jsonArray.add(paysArray);
         }
 
-        return Response.ok(jsonObject.toString(), MediaType.APPLICATION_JSON).build();
+        return Response.ok(jsonArray.toString(), MediaType.APPLICATION_JSON).build();
     }
 }

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>index</title>
+</head>
+<body>
+  <center>
+    <form name="form" method="post" action="j_security_check">
+      <div>
+        EMail:<br>
+        <input type="text" name="j_username">
+      </div>
+      <div>
+        Password:<br>
+        <input type="password" name="j_password">
+      </div>
+      <div>
+        <input type="submit" value="Submit">
+      </div>
+    </form>
+    <br>
+    <form action="api/auth/googleCode" method="POST">
+      <button type="submit">Зайти через Google</button>
+    </form>
+    <a href="../registration/register.html">Register</a>
+    <br>
+    <a href="../../public/secret.html">Secret</a>
+  </center>
+</body>

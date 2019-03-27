@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+</head>
+<body>
+    <center>
+        <table>
+            <tr>
+                <td>
+                    <form name="changeProfileInfo" method="post" action="api/profile">
+                        <div>
+                            Name:<br>
+                            <input type="text" name="name">
+                        </div>
+                        <div>
+                            Surname:<br>
+                            <input type="text" name="surname">
+                        </div>
+                        <div>
+                            Middlename:<br>
+                            <input type="text" name="middlename">
+                        </div>
+                        <div>
+                            Gender:<br>
+                            <input type="text" name="sex">
+                        </div>
+                        <div>
+                            birthDate:<br>
+                            <input type="date" name="birthDate">
+                        </div>
+                        <div>
+                            mobileTelephone:<br>
+                            <input type="text" name="mobileTelephone">
+                        </div>
+                        <div>
+                            Выберете льготу:<br>
+                            <input type="radio" name="preference" value="0" checked> Нет льготы<br>
+                            <input type="radio" name="preference" value="1"> Безработный<br>
+                            <input type="radio" name="preference" value="2"> Пенсионер<br>
+                            <input type="radio" name="preference" value="3"> Политрепрессированный<br>
+                            <input type="radio" name="preference" value="4"> Многодетный<br>
+                            <input type="radio" name="preference" value="5"> Ветеран<br>
+                            <input type="radio" name="preference" value="6"> Студент<br>
+                            <input type="radio" name="preference" value="7"> Ученик<br>
+                            <input type="radio" name="preference" value="8"> Инвалид<br>
+                        </div>
+                        <br>
+                        <div>
+                            <input type="submit" value="Submit">
+                        </div>
+                    </form>
+                </td>
+
+                <td>
+                    <form name="changePassword" method="post" action="api/profile/changePassword">
+                        <div>
+                            Old password:<br>
+                            <input type="password" name="oldPassword">
+                        </div>
+                        <br>
+                        <div>
+                            New password:<br>
+                            <input type="password" name="firstPassword">
+                        </div>
+                        <div>
+                            Repeat new password:<br>
+                            <input type="password" name="secondPassword">
+                        </div>
+                        <div>
+                            <input type="submit" value="Submit">
+                        </div>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </center>
+</body>
+</html>

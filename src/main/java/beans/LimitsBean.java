@@ -1,5 +1,7 @@
 package beans;
 
+import com.google.gson.JsonArray;
+import requestHelpers.ConvertInfo;
 import com.google.gson.JsonObject;
 import dao.GenericDao;
 import dao.TodayLimitDao;
@@ -10,10 +12,7 @@ import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -26,14 +25,13 @@ public class LimitsBean {
     private SessionContext sessionContext;
 
     @Path("convert")
+    @Consumes(MediaType.APPLICATION_JSON)
     @POST
-    public boolean convert(@FormParam("from") String fromStr,
-                           @FormParam("to") String toStr,
-                           @FormParam("howMuchTo") String howMuchToStr) {
+    public Response convert(final ConvertInfo input) {
 
-        int from = Integer.parseInt(fromStr);
-        int to = Integer.parseInt(toStr);
-        float howMuchTo = Float.parseFloat(howMuchToStr);
+        int from = Integer.parseInt(input.from);
+        int to = Integer.parseInt(input.to);
+        float howMuchTo = Float.parseFloat(input.howMuchTo);
 
         UserDao userDao = new UserDao();
         UserEntity user = userDao.findByEmail(sessionContext.getCallerPrincipal().getName());
@@ -52,10 +50,10 @@ public class LimitsBean {
             tmpEntity.setLimit(limitTo+howMuchTo);
             todayLimits.update(tmpEntity);
             /*todayLimits.finishWork();*/
-            return true;
+            return Response.ok("Successfully converted").build();
         } else{
             /*todayLimits.finishWork();*/
-            return false;
+            return Response.ok("Lack of limits").build();
         }
     }
 
@@ -64,11 +62,13 @@ public class LimitsBean {
         UserDao userDao = new UserDao();
         UserEntity user = userDao.findByEmail(sessionContext.getCallerPrincipal().getName());
         TodayLimitDao limitDao = new TodayLimitDao();
-        JsonObject jsonObject = new JsonObject();
-        for (Object[] limit:
-                limitDao.findByUserId(user.getId())) {
-            jsonObject.addProperty(limit[0].toString(), limit[1].toString());
+        JsonArray jsonLimits = new JsonArray();
+        for (Object[] limit: limitDao.findByUserId(user.getId())) {
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("transport", limit[0].toString());
+            jsonObject.addProperty("limit", limit[1].toString());
+            jsonLimits.add(jsonObject);
         }
-        return Response.ok(jsonObject.toString(), MediaType.APPLICATION_JSON).build();
+        return Response.ok(jsonLimits.toString(), MediaType.APPLICATION_JSON).build();
     }
 }

@@ -1,7 +1,10 @@
 package beans;
 
+import com.google.gson.JsonObject;
 import dao.UserDao;
 import entities.UserEntity;
+import requestHelpers.ProfileDataInfo;
+import requestHelpers.ProfilePasswordInfo;
 import services.AuthenticationService;
 
 import javax.annotation.Resource;
@@ -10,10 +13,9 @@ import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.DatatypeConverter;
 import java.io.UnsupportedEncodingException;
@@ -29,50 +31,61 @@ public class ProfileBean {
     @Resource
     private SessionContext sessionContext;
 
-    @POST
-    public Response changeProfileInfo(@FormParam("name") String name,
-                                      @FormParam("surname") String surname,
-                                      @FormParam("middlename") String middlename,
-                                      @FormParam("sex") String sex,
-                                      @FormParam("birthDate") Date birthDate,
-                                      @FormParam("mobileTelephone") String mobileTelephone,
-                                      @FormParam("preference") String preference) {
+    @GET
+    public Response getProfileInfo() {
         UserDao userDao = new UserDao();
         UserEntity user = userDao.findByEmail(sessionContext.getCallerPrincipal().getName());
-        if (name != null && !surname.equals(""))
-            user.setName(name);
-        if (surname != null && !surname.equals(""))
-            user.setSurname(surname);
-        if (middlename != null && !middlename.equals(""))
-            user.setMiddleName(middlename);
-        if (sex.equals("М") || sex.equals("Ж") || sex.equals("Не афишировать")) user.setSex(sex);
+
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("name", user.getName());
+        jsonObject.addProperty("surname", user.getSurname());
+        jsonObject.addProperty("middlename", user.getMiddleName());
+        jsonObject.addProperty("gender", user.getSex());
+        jsonObject.addProperty("birthDate", user.getBirthDate().toString());
+        jsonObject.addProperty("mobileTelephone", user.getMobileTelephone());
+        jsonObject.addProperty("preference", user.getPreferenceId());
+
+        return Response.ok(jsonObject.toString(), MediaType.APPLICATION_JSON).build();
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response changeProfileInfo(final ProfileDataInfo input) {
+        UserDao userDao = new UserDao();
+        UserEntity user = userDao.findByEmail(sessionContext.getCallerPrincipal().getName());
+        if (input.name != null && !input.name.equals(""))
+            user.setName(input.name);
+        if (input.surname != null && !input.surname.equals(""))
+            user.setSurname(input.surname);
+        if (input.middlename != null && !input.middlename.equals(""))
+            user.setMiddleName(input.middlename);
+        if (input.sex.equals("М") || input.sex.equals("Ж") || input.sex.equals("Не афишировать")) user.setSex(input.sex);
 //        else user.setSex(""); //todo или ошибку кидать?
-        if(birthDate != null)
-            user.setBirthDate(birthDate);
-        if (mobileTelephone != null && !mobileTelephone.equals(""))
-            user.setMobileTelephone(mobileTelephone);
-        user.setPreferenceId(Integer.valueOf(preference));
+        if(input.birthDate != null)
+            user.setBirthDate(input.birthDate);
+        if (input.mobileTelephone != null && !input.mobileTelephone.equals(""))
+            user.setMobileTelephone(input.mobileTelephone);
+        user.setPreferenceId(Integer.valueOf(input.preference));
 
         userDao.update(user);
 
-        return Response.ok("Profile info upadated").build();
+        return Response.ok("Profile info updated").build();
     }
 
     @POST
     @RolesAllowed("user")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Path("changePassword")
-    public Response register(@FormParam("oldPassword") String oldPassword,
-                             @FormParam("firstPassword") String firstPassword,
-                             @FormParam("secondPassword") String secondPassword) {
+    public Response register(final ProfilePasswordInfo input) {
         UserDao userDao = new UserDao();
         UserEntity user = userDao.findByEmail(sessionContext.getCallerPrincipal().getName());
 
         try {
-            if (user.getPassword().equals(AuthenticationService.encodeSHA256(oldPassword))) {
-                if (firstPassword.equals(secondPassword)) {
+            if (user.getPassword().equals(AuthenticationService.encodeSHA256(input.oldPassword))) {
+                if (input.firstPassword.equals(input.secondPassword)) {
 
                     try {
-                        user.setPassword(AuthenticationService.encodeSHA256(firstPassword));
+                        user.setPassword(AuthenticationService.encodeSHA256(input.firstPassword));
                     } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
                         e.printStackTrace();
                         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)

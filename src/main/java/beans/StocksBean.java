@@ -1,5 +1,6 @@
 package beans;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import dao.GenericDao;
 import entities.StockEntity;
@@ -16,12 +17,15 @@ public class StocksBean {
     @GET
     public Response showStocks() {
         GenericDao<StockEntity, StockEntityPK> stockDao = new GenericDao<>(StockEntity.class);
-        JsonObject jsonObject = new JsonObject();
+        JsonArray jsonStocks = new JsonArray();
         for (StockEntity stock:
                 stockDao.selectAll()) {
-            jsonObject.addProperty(stock.getNaming() + " (" + stock.getStockDay() + "." + stock.getStockMonth() +
-                    ")", String.valueOf(stock.getAddition()));
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("naming", stock.getNaming());
+            jsonObject.addProperty("date", "("+ stock.getStockDay() + "." + stock.getStockMonth() + ")");
+            jsonObject.addProperty("addition", stock.getAddition());
+            jsonStocks.add(jsonObject);
         }
-        return Response.ok(jsonObject.toString(), MediaType.APPLICATION_JSON).build();
+        return Response.ok(jsonStocks.toString(), MediaType.APPLICATION_JSON).build();
     }
 }

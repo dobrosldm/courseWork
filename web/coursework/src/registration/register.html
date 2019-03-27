@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test</title>
+</head>
+<body>
+    <h1>Registrahun</h1>
+    <center>
+        <form name="register" method="post" action="api/auth/register">
+            <div>
+                EMail:<br>
+                <input type="text" name="email">
+            </div>
+            <div>
+                Create password:<br>
+                <input type="password" name="firstPassword">
+            </div>
+            <div>
+                Repeat password:<br>
+                <input type="password" name="secondPassword">
+            </div>
+            <br>
+            <div>
+                Name:<br>
+                <input type="text" name="name">
+            </div>
+            <div>
+                Surname:<br>
+                <input type="text" name="surname">
+            </div>
+            <div>
+                Middlename:<br>
+                <input type="text" name="middlename">
+            </div>
+            <div>
+                Gender:<br>
+                <input type="text" name="sex">
+            </div>
+            <div>
+                birthDate:<br>
+                <input type="date" name="birthDate">
+            </div>
+            <div>
+                mobileTelephone:<br>
+                <input type="text" name="mobileTelephone">
+            </div>
+            <div>
+                Выберете льготу:<br>
+                <input type="radio" name="preference" value="0" checked> Нет льготы<br>
+                <input type="radio" name="preference" value="1"> Безработный<br>
+                <input type="radio" name="preference" value="2"> Пенсионер<br>
+                <input type="radio" name="preference" value="3"> Политрепрессированный<br>
+                <input type="radio" name="preference" value="4"> Многодетный<br>
+                <input type="radio" name="preference" value="5"> Ветеран<br>
+                <input type="radio" name="preference" value="6"> Студент<br>
+                <input type="radio" name="preference" value="7"> Ученик<br>
+                <input type="radio" name="preference" value="8"> Инвалид<br>
+            </div>
+            <br>
+            <div>
+                <input type="submit" value="Submit">
+            </div>
+        </form>
+
+        <!--<form action="api/auth/vkGetCode" method="POST">
+            <button type="submit">Зайти через VK</button>
+        </form>
+        <a href="https://oauth.vk.com/authorize?client_id=6884651&display=page&redirect_uri=https://oauth.vk.com/blank.html&scope=offline&response_type=token&v=5.92">VK</a>-->
+        <form action="api/auth/googleCode" method="POST">
+            <button type="submit">Зарегаться через Google</button>
+        </form>
+    </center>
+</body>
+</html>
