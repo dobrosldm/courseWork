@@ -18,22 +18,24 @@ import Limits from "./limits/Limits";
 
 ReactDOM.render(
     <BrowserRouter>
-        <table>
-            <tr>
-                <td>
-                    <Route path="/" name="menu" component={SideMenu} />
-                </td>
-                <td>
-                    <Route path="/main" name="main" component={StartingPage} />
-                    <Route path="/stocks" name="stocks" component={Stocks} />
-                    <Route path="/feedback" name="feedback" component={Feedback} />
-                    <Route path="/login" name="login" component={Login} />
-                    <Route path="/registration" name="registration" component={Registration} />
-                    <Route path="/profile" name="profile" component={Profile} />
-                    <Route path="/navigation" name="navigation" component={Navigation} />
-                    <Route path="/limits" name="limits" component={Limits} />
-                </td>
-            </tr>
-        </table>
+        <div className="header">
+            <h1><i>Навигатор Будущего</i></h1>
+        </div>
+        <div className="row">
+            <div className="column side">
+                <Route path="/" name="menu" component={SideMenu} />
+            </div>
+            <div className="column middle">
+                <Route path="/main" name="main" component={StartingPage} />
+                <Route path="/stocks" name="stocks" component={Stocks} />
+                <Route path="/feedback" name="feedback" component={Feedback} />
+                <Route path="/login" name="login" component={Login} />
+                <Route path="/registration" name="registration" component={Registration} />
+                <Route path="/profile" name="profile" component={Profile} />
+                <Route path="/navigation" name="navigation" component={Navigation}  />
+                <Route path="/limits" name="limits" component={Limits} />
+            </div>
+        </div>
+        {localStorage.removeItem("token")}
     </BrowserRouter>
     , document.getElementById('app'));

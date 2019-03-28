@@ -25,6 +25,10 @@ export default class Login extends React.Component {
     }
 
     componentWillMount() {
+        if(localStorage.getItem("token") === null) {
+            this.props.history.replace('/main');
+            return;
+        }
         fetch('api/profile')
             .then(results => {
                 return results.json();

@@ -19,13 +19,15 @@ export default class Navigation extends React.Component {
         this.state = { from : '', to : '', showRoute: false, enoughLim: false, wrongStpg: false, block: false};
     }
 
-    //componentDidMount() {
-    //    this.updateRoute();
-    //}
+    componentWillMount() {
+        if(localStorage.getItem("token") === null) {
+            this.props.history.replace('/main');
+        }
+    }
 
     updateRoute() {
         const ctx = this.refs.canvas.getContext('2d');
-        ctx.clearRect(0, 0, this.width, this.height);
+        ctx.clearRect(0, 0, this.refs.canvas.width, this.refs.canvas.height);
 
         // ctx.beginPath();
         // ctx.moveTo(0, this.yCent);
@@ -146,53 +148,45 @@ export default class Navigation extends React.Component {
 
     render() {
         return (
-            <center>
-                <table>
-                    <tr>
-                        <td>
-                            <canvas className="canvas" ref="canvas" width={this.width} height={this.height} />
-                        </td>
-                        <td>
-                            {this.state.showRoute && this.smallRoute.map(routeUnit => {
-                                return (
-                                    <div key={routeUnit[0]}>
-                                        Остановка {routeUnit[0]} <br/>
-                                        &#10240;&#10240;&#10240;&#10240;&#10240;&#10240;&#10240;&#10240;&#8615; - {routeUnit[2]}<br/>
-                                        Остановка {routeUnit[1]}
-                                    </div>
-                                );
-                            })}
-                            <br/>
-                            {this.state.showRoute && this.responseJson[2].map(limitUnit => {
-                                return (
-                                    <div key={limitUnit.transport}>
-                                        {limitUnit.transport} <br/>
-                                        Будет потрачено: {limitUnit.spent}
-                                    </div>
-                                );
-                            })}
-                            <br/>
-                            {!this.state.enoughLim && this.state.showRoute && <div className="badAlert" >Недостаточно лимитов для совершения поездки</div>}
-                            {this.state.enoughLim && <div className="goodAlert" >Достаточно лимитов для совершения поездки</div>}
-                            <form>
-                                <div>
-                                    Stoppage from:<br/>
-                                    <InputText name="from" keyfilter="pint" onChange={this.handleChange} value={this.state.from} />
-                                </div>
-                                <div>
-                                    Stoppage to:<br/>
-                                    <InputText name="to" keyfilter="pint" onChange={this.handleChange} value={this.state.to} />
-                                </div>
-                            </form>
-                            {this.state.wrongStpg && <div className="badAlert">Введены неверные номера остановок</div>}
-                            <Button label="Показать маршрут" icon="pi pi-check" onClick={this.showRoute} />&#10240;
-                            <Button label="Проехать" disabled={!this.state.enoughLim || this.state.block} icon="pi pi-check" onClick={this.takeRide} />
-                            <br/><br/>
-                            {this.state.succRide && <div className="goodAlert">Поездка успешно совершена</div>}
-                        </td>
-                    </tr>
-                </table>
-            </center>
+            <div>
+                <canvas className="canvas" ref="canvas" width={this.width} height={this.height} />
+                {this.state.showRoute && this.smallRoute.map(routeUnit => {
+                    return (
+                        <div key={routeUnit[0]}>
+                            Остановка {routeUnit[0]} <br/>
+                            &#10240;&#10240;&#10240;&#10240;&#8615; - {routeUnit[2]}<br/>
+                            Остановка {routeUnit[1]}
+                        </div>
+                    );
+                })}
+                <br/>
+                {this.state.showRoute && this.responseJson[2].map(limitUnit => {
+                    return (
+                        <div key={limitUnit.transport}>
+                            {limitUnit.transport} <br/>
+                            Будет потрачено: {limitUnit.spent}
+                        </div>
+                    );
+                })}
+                <br/>
+                {!this.state.enoughLim && this.state.showRoute && <div className="badAlert" >Недостаточно лимитов для совершения поездки</div>}
+                {this.state.enoughLim && <div className="goodAlert" >Достаточно лимитов для совершения поездки</div>}
+                <form>
+                    <div>
+                        С какой остановки:<br/>
+                        <InputText name="from" keyfilter="pint" onChange={this.handleChange} value={this.state.from} />
+                    </div>
+                    <div>
+                        До какой остановки:<br/>
+                        <InputText name="to" keyfilter="pint" onChange={this.handleChange} value={this.state.to} />
+                    </div>
+                </form>
+                {this.state.wrongStpg && <div className="badAlert">Введены неверные номера остановок</div>}
+                <Button label="Показать маршрут" icon="pi pi-check" onClick={this.showRoute} />&#10240;
+                <Button label="Проехать" disabled={!this.state.enoughLim || this.state.block} icon="pi pi-check" onClick={this.takeRide} />
+                <br/><br/>
+                {this.state.succRide && <div className="goodAlert">Поездка успешно совершена</div>}
+            </div>
         )
     }
 }

@@ -15,6 +15,7 @@ import dao.UserDao;
 import entities.*;
 import requestHelpers.RegisterInfo;
 import services.AuthenticationService;
+import services.MailService;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
@@ -70,7 +71,7 @@ public class AuthBean {
         Form postForm = new Form();
         postForm.param("code", request.getParameter("code"));
         postForm.param("client_id", "896135202021-huh38ginkjct777ts4jldnm43c0o81lo.apps.googleusercontent.com");
-        postForm.param("client_secret", "*******");
+        postForm.param("client_secret", "asXLAbuN7zIhULMVnUTeMcdK");
         postForm.param("grant_type", "authorization_code");
         postForm.param("redirect_uri", "http://localhost:24315/api/auth/googleAuth");
 
@@ -173,8 +174,18 @@ public class AuthBean {
                 response.sendRedirect(response.encodeRedirectURL("http://localhost:24315/j_security_check?" +
                         "j_username=" + input.email +
                         "&j_password=" + input.firstPassword));
+                MailService mailService = new MailService();
+                mailService.sendMail(input.email, "Успешная регистрация!",
+                        "Вы только что зарегесестрировались с помощью своей учётной записи Google!\n" +
+                                "Перейдите в настройки профиля, чтобы указать льготу.");
                 return Response.ok().entity("Successfully registered with OAuth").build();
-            } else return Response.ok().entity("Successfully registered").build();
+            } else {
+                MailService mailService = new MailService();
+                mailService.sendMail(input.email, "Успешная регистрация!",
+                        "Вы только что зарегесестрировались на сайте Навигатора Будущего!\n" +
+                                "Пользуйтесь нашим сервисом с удовольствием!");
+                return Response.ok().entity("Successfully registered").build();
+            }
         }
 
         if (request.getAttribute("OAuth") != null && request.getAttribute("OAuth").equals("true"))

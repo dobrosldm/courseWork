@@ -10,7 +10,10 @@ export default class Feedback extends React.Component {
         this.state = {
             name: '',
             email: '',
-            message: ''
+            message: '',
+            badAl: false,
+            goodAl: false,
+            errorMsg: ""
         };
     }
 
@@ -20,8 +23,9 @@ export default class Feedback extends React.Component {
 
     handleSubmit = (event) => {
         event.preventDefault();
+        this.setState({badAl: false, goodAl: false});
         const {name, email, message} = this.state;
-        let errorMsg = this.validatePassword();
+        let errorMsg = this.validate();
         if (errorMsg.length < 1) {
             fetch('api/placeFeedback', {
                 method: 'post',
@@ -35,10 +39,10 @@ export default class Feedback extends React.Component {
                 return response.text();
             }).then(data => {
                 if (data === "Report feedback sent")
-                    alert('Отзыв отправлен');
+                    this.setState({goodAl: true});
             })
         } else {
-            alert(errorMsg);
+            this.setState({errorMsg: errorMsg, badAl: true});
         }
     };
 
@@ -63,7 +67,7 @@ export default class Feedback extends React.Component {
     render() {
         const {name, email, message} = this.state;
         return (
-            <div align="center">
+            <div>
                 <form onSubmit={this.handleSubmit}>
                     <div>
                         Имя:<br/>
@@ -75,10 +79,13 @@ export default class Feedback extends React.Component {
                     </div>
                     <div>
                         Текст отзыва:<br/>
-                        <InputTextarea name="message" rows={10} cols={50} autoResize={true} onChange={this.handleChange} value={message}/>
+                        <InputTextarea name="message" rows={10} cols={45} autoResize={true} onChange={this.handleChange} value={message}/>
                     </div>
                     <Button label="Отправить отзыв" icon="pi pi-check" />
                 </form>
+                <br/>
+                {this.state.goodAl && <div className="goodAlert">Отзыв успешно отправлен</div>}
+                {this.state.badAl && <div className="badAlert">{this.state.errorMsg}</div>}
             </div>
         )
     }

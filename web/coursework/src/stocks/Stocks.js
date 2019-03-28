@@ -4,15 +4,15 @@ export default class Stocks extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {stocks: []};
+        this.state = {stocks: [], showAl: false};
     }
 
-    componentWillMount() {
+    componentDidMount() {
         fetch('api/stocks')
             .then(results => {
                 return results.json();
             }).then(data => {
-                this.setState({stocks: data});
+                this.setState({stocks: data, showAl: true});
             })
     }
 
@@ -29,6 +29,8 @@ export default class Stocks extends React.Component {
                         )
                     })
                 }
+                <br/>
+                {this.state.showAl && <div className="goodAlert">Акции успешно загружены</div>}
             </div>
         )
     }

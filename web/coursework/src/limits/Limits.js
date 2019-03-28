@@ -6,7 +6,7 @@ export default class Limits extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { from: '', to: '', howMuchTo: '', limits : []};
+        this.state = { from: '', to: '', howMuchTo: '', limits : [], showAl: false};
     }
 
     handleChange = (event) => {
@@ -32,8 +32,14 @@ export default class Limits extends React.Component {
         })
     };
 
-    componentWillMount() {
+    componentDidMount() {
         this.updateLimits();
+    }
+
+    componentWillMount(){
+        if(localStorage.getItem("token") === null) {
+            this.props.history.replace('/main');
+        }
     }
 
     updateLimits = () => {
@@ -41,14 +47,15 @@ export default class Limits extends React.Component {
             .then(results => {
                 return results.json();
             }).then(data => {
-            this.setState({limits: data});
+            this.setState({limits: data, showAl: true});
         })
     };
 
     render() {
         const {from, to, howMuchTo} = this.state;
         return (
-            <div align="center">
+            <div>
+                {this.state.showAl && <div className="goodAlert">Лимиты успешно загружены</div>}
                 <div>
                     {
                         this.state.limits.map(limit => {
@@ -63,18 +70,18 @@ export default class Limits extends React.Component {
                 <br/>
                 <form onSubmit={this.handleSubmit}>
                     <div>
-                        From:<br/>
+                        Откуда:<br/>
                         <InputText name="from" onChange={this.handleChange} value={from}/>
                     </div>
                     <div>
-                        To:<br/>
+                        Куда:<br/>
                         <InputText name="to" onChange={this.handleChange} value={to}/>
                     </div>
                     <div>
-                        How much to gain:<br/>
+                        Сколько перевести:<br/>
                         <InputText name="howMuchTo" onChange={this.handleChange} value={howMuchTo}/>
                     </div>
-                    <Button type='submit' label='Convert' icon='pi pi-check' />
+                    <Button type='submit' label='Конвертировать' icon='pi pi-check' />
                 </form>
             </div>
         )

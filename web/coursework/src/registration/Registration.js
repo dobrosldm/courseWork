@@ -20,7 +20,9 @@ export default class Registration extends React.Component {
             gender: 'Не афишировать',
             birthDate : undefined,
             mobileTelephone : null,
-            preference: 0
+            preference: 0,
+            showAl: false,
+            alText: ""
         };
     }
 
@@ -30,6 +32,7 @@ export default class Registration extends React.Component {
 
     handleSubmit = (event) => {
         event.preventDefault();
+        this.setState({showAl: false});
         const {email, firstPassword, secondPassword, name, surname, middlename, gender, birthDate, mobileTelephone, preference} = this.state;
         let errorMsg = this.validate();
         if (errorMsg.length < 1) {
@@ -55,14 +58,14 @@ export default class Registration extends React.Component {
                     fetch('j_security_check?j_username='+this.state.email+'&j_password='+this.state.firstPassword, {
                         method: 'post'
                     }).then(response => {
-                        if (response.ok) alert("Вы зарегестрировались");
+                        if (response.ok) this.props.history.push('/login');
                         else console.log("Интернал еррор")
                         }).catch(err => console.log(err.message))
                 }
 
             })
         } else {
-            alert(errorMsg);
+            this.setState({showAl: true, alText: errorMsg});
         }
     };
 
@@ -89,6 +92,10 @@ export default class Registration extends React.Component {
         }
     };
 
+    handleGoogle = () => {
+        localStorage.setItem("token", 'OAuth');
+    };
+
     render() {
         const genders = [
             {gender: 'Не афишировать'},
@@ -97,7 +104,7 @@ export default class Registration extends React.Component {
         ];
         return (
             <div align="center">
-                <h1>Registrahun</h1>
+                <h2>Регистрация</h2>
                 <form onSubmit={this.handleSubmit}>
                     <div>
                         Адрес электронной почты:<br/>
@@ -108,11 +115,11 @@ export default class Registration extends React.Component {
                         <Password name="firstPassword" onChange={this.handleChange} value={this.state.firstPassword}/>
                     </div>
                     <div>
-                        Повторить пароль:<br/>
+                        Повторите пароль:<br/>
                         <Password name="secondPassword" onChange={this.handleChange} value={this.state.secondPassword} feedback={false} />
                     </div>
                     <div>
-                        Имя:<br/>
+                        <br/>Имя:<br/>
                         <InputText name="name" keyfilter={/[а-яА-ЯA-Za-z]/} onChange={this.handleChange} value={this.state.name}/>
                     </div>
                     <div>
@@ -124,7 +131,7 @@ export default class Registration extends React.Component {
                         <InputText name="middlename" keyfilter={/[а-яА-ЯA-Za-z]/} onChange={this.handleChange} value={this.state.middlename}/>
                     </div>
                     <div>
-                        Пол:<br/>
+                        <br/>Пол:<br/>
                         <ListBox name="gender" value={this.state.gender} options={genders} onChange={(event) => {this.setState({gender: event.value.gender})}} optionLabel="gender"/>
                     </div>
                     <div>
@@ -136,8 +143,9 @@ export default class Registration extends React.Component {
                         Номер телефона:<br/>
                         <InputMask name="mobileTelephone" mask="+79999999999" placeholder="+7**********" value={this.state.mobileTelephone} onChange={this.handleChange} />
                     </div>
-                    <div>
-                        Выберете льготу:<br/>
+                    <br/>
+                    Выберете льготу:<br/>
+                    <div className="lgota">
                         <RadioButton name="preference" value={0} onChange={this.handleChange} checked={this.state.preference === 0} /> Нет льготы<br/>
                         <RadioButton name="preference" value={1} onChange={this.handleChange} checked={this.state.preference === 1} /> Безработный<br/>
                         <RadioButton name="preference" value={2} onChange={this.handleChange} checked={this.state.preference === 2} /> Пенсионер<br/>
@@ -148,13 +156,15 @@ export default class Registration extends React.Component {
                         <RadioButton name="preference" value={7} onChange={this.handleChange} checked={this.state.preference === 7} /> Ученик<br/>
                         <RadioButton name="preference" value={8} onChange={this.handleChange} checked={this.state.preference === 8} /> Инвалид<br/>
                     </div>
+                    <br/>
                     <div>
                         <Button type='submit' label="Зарегистрироваться" icon="pi pi-check" />
                     </div>
                 </form>
                 <br/>
+                {this.state.showAl && <div><div className="badAlert">{this.state.alText}</div><br/></div>}
                 <form action="api/auth/googleCode" method="POST">
-                    <Button label="Зарегистрироваться через Google" icon="pi pi-check" />
+                    <Button label="Зарегистрироваться через Google" icon="pi pi-check" onClick={this.handleGoogle}/>
                 </form>
             </div>
         );

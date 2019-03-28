@@ -10,6 +10,8 @@ export default class Login extends React.Component {
         this.state = {
             j_username: '',
             j_password: '',
+            succLog: false,
+            errData: false
         };
     }
 
@@ -18,52 +20,55 @@ export default class Login extends React.Component {
     };
 
     handleGoogle = () => {
-        /*fetch("http://localhost:24315/api/auth/googleCode", {method: "POST", redirect: "follow"})
-            .then(response => {
-                return response;
-            }).then(data => {
-                console.log(data.url);
-                window.open(data.url, "_self")
-            })*/
+        localStorage.setItem("token", 'OAuth');
     };
 
     handleSubmit = (event) => {
         event.preventDefault();
+        this.setState({errData: false});
         if (this.state.j_username === null || this.state.j_username.length < 1) {
-            alert("Почту введи, друг"); return;
+            this.setState({errData: true}); return;
         }
         if (this.state.j_password === null || this.state.j_password.length < 1) {
-            alert("Тi забыл пароль"); return;
+            this.setState({errData: true}); return;
         }
         fetch('j_security_check?j_username='+this.state.j_username+'&j_password='+this.state.j_password, {
             method: 'post'
         }).then(response => {
-            if (response.ok) this.props.history.push('/navigation');
-            else alert("Тi не понравился серверу")
+            if (response.ok) {
+                localStorage.setItem("token", this.state.j_username);
+                this.setState({succLog: false});
+                this.props.history.push('/navigation');
+            }
+            else
+                this.setState({errData: true});
             }).catch(err => alert(err.message))
     };
 
     render() {
         return (
-            <center>
+            <div>
+                <form method="post" action="api/auth/googleCode">
+                    <Button label="Войти через Google" icon="pi pi-check" onClick={this.handleGoogle}/>
+                </form>
+                <br/>
                 <form onSubmit={this.handleSubmit}>
                     <div>
-                        EMail:<br/>
+                        Введите eMail:<br/>
                         <InputText name="j_username" value={this.state.j_username} onChange={this.handleChange}/>
                     </div>
                     <div>
-                        Password:<br/>
+                        Введите пароль:<br/>
                         <Password name="j_password" value={this.state.j_password} onChange={this.handleChange} feedback={false} />
                     </div>
                     <div>
-                        <Button label="Login" icon="pi pi-check" />
+                        <Button label="Войти" icon="pi pi-check" />
                     </div>
                 </form>
                 <br/>
-                <form method="post" action="api/auth/googleCode">
-                    <Button label="Зайти через Google" icon="pi pi-check" onClick={this.handleGoogle}/>
-                </form>
-            </center>
+                {this.state.succLog && <div className="goodAlert">Вы успешно вошли</div>}
+                {this.state.errData && <div className="badAlert">Введены неверные данные</div>}
+            </div>
         )
     }
 }
