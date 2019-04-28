@@ -25,14 +25,13 @@ export default class Login extends React.Component {
     }
 
     componentWillMount() {
-        if(localStorage.getItem("token") === null) {
-            this.props.history.replace('/main');
-            return;
-        }
-        fetch('api/profile')
-            .then(results => {
-                return results.json();
-            }).then(data => {
+        if(localStorage.getItem('token') === null) {
+            this.props.history.push('/main');
+        } else {
+            fetch('api/profile')
+                .then(results => {
+                    return results.json();
+                }).then(data => {
                 this.setState({name: data.name});
                 this.setState({surname: data.surname});
                 this.setState({middlename: data.middlename});
@@ -40,7 +39,8 @@ export default class Login extends React.Component {
                 this.setState({birthDate: data.birthDate});
                 this.setState({mobileTelephone: data.mobileTelephone});
                 this.setState({preference: data.preference});
-            })
+            });
+        }
     }
 
     handleChange = (event) => {

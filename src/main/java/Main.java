@@ -20,8 +20,8 @@ public class Main {
         }
         limitDao.finishWork();*/
         System.getProperties().put( "proxySet", "true" );
-        System.getProperties().put( "socksProxyHost", "50.63.13.135" );
-        System.getProperties().put( "socksProxyPort", "23232" );
+        System.getProperties().put( "socksProxyHost", "157.230.56.56" );
+        System.getProperties().put( "socksProxyPort", "1080" );
         ApiContextInitializer.init();
         TelegramBotsApi botsApi = new TelegramBotsApi();
         try {

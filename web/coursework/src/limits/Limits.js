@@ -37,8 +37,8 @@ export default class Limits extends React.Component {
     }
 
     componentWillMount(){
-        if(localStorage.getItem("token") === null) {
-            this.props.history.replace('/main');
+        if(localStorage.getItem('token') === null) {
+            this.props.history.push('/main');
         }
     }
 

@@ -10,9 +10,14 @@ export default class Login extends React.Component {
         this.state = {
             j_username: '',
             j_password: '',
-            succLog: false,
             errData: false
         };
+    }
+
+    componentWillMount() {
+        if(localStorage.getItem('token') !== null) {
+            this.props.history.push('/main');
+        }
     }
 
     handleChange = (event) => {
@@ -20,11 +25,11 @@ export default class Login extends React.Component {
     };
 
     handleGoogle = () => {
-        localStorage.setItem("token", 'OAuth');
+        localStorage.setItem('token', 'OAuth');
     };
 
     handleSubmit = (event) => {
-        event.preventDefault();
+        // event.preventDefault();
         this.setState({errData: false});
         if (this.state.j_username === null || this.state.j_username.length < 1) {
             this.setState({errData: true}); return;
@@ -36,8 +41,7 @@ export default class Login extends React.Component {
             method: 'post'
         }).then(response => {
             if (response.ok) {
-                localStorage.setItem("token", this.state.j_username);
-                this.setState({succLog: false});
+                localStorage.setItem('token', this.state.j_username);
                 this.props.history.push('/navigation');
             }
             else
@@ -66,7 +70,6 @@ export default class Login extends React.Component {
                     </div>
                 </form>
                 <br/>
-                {this.state.succLog && <div className="goodAlert">Вы успешно вошли</div>}
                 {this.state.errData && <div className="badAlert">Введены неверные данные</div>}
             </div>
         )

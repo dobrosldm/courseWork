@@ -36,6 +36,5 @@ ReactDOM.render(
                 <Route path="/limits" name="limits" component={Limits} />
             </div>
         </div>
-        {localStorage.removeItem("token")}
     </BrowserRouter>
     , document.getElementById('app'));

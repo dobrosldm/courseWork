@@ -30,6 +30,12 @@ export default class Registration extends React.Component {
         this.setState({[event.target.name]: event.target.value})
     };
 
+    componentWillMount() {
+        if(localStorage.getItem('token') !== null) {
+            this.props.history.push('/main');
+        }
+    }
+
     handleSubmit = (event) => {
         event.preventDefault();
         this.setState({showAl: false});
@@ -37,7 +43,7 @@ export default class Registration extends React.Component {
         let errorMsg = this.validate();
         if (errorMsg.length < 1) {
             fetch('api/auth/register', {
-                method: 'post',
+                method: 'pfiost',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
                     email: email,
@@ -58,8 +64,12 @@ export default class Registration extends React.Component {
                     fetch('j_security_check?j_username='+this.state.email+'&j_password='+this.state.firstPassword, {
                         method: 'post'
                     }).then(response => {
-                        if (response.ok) this.props.history.push('/login');
-                        else console.log("Интернал еррор")
+                        if (response.ok) {
+                            localStorage.setItem('token', this.state.email);
+                            this.props.history.push('/navigation');
+                        }
+                        else
+                            console.log("Интернал еррор")
                         }).catch(err => console.log(err.message))
                 }
 
@@ -93,7 +103,7 @@ export default class Registration extends React.Component {
     };
 
     handleGoogle = () => {
-        localStorage.setItem("token", 'OAuth');
+        localStorage.setItem('token', 'OAuth');
     };
 
     render() {

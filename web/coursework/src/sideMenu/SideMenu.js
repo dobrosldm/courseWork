@@ -31,7 +31,7 @@ export default class SideMenu extends React.Component {
                             }).then(data => {
                             if (data === "Logged out") {
                                 // alert('Что ты мне сделаешь я вдругой сессии');
-                                localStorage.removeItem("token");
+                                localStorage.removeItem('token');
                                 props.history.push('/main');
                             }
                         })
