@@ -4,9 +4,9 @@
 
 List of used technologies:
 * Application Server - Payara
-* Backend - Java EE (jax-ws, 0Auth, JavaMail)
-* Frontend - React + Redux
-* Mobile application - React Native
+* Backend - Java EE (jax-rs, 0Auth, JavaMail)
+* Frontend - React
+* Mobile application - React Native + Redux
 * Database - PostgeSQL
 * ORM - Hibernate
 * Simple Telegram-bot realization
